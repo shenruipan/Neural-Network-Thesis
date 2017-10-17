@@ -17,7 +17,7 @@ np.random.seed(123)
 num_filter1 = 4
 num_filter2 = 12
 learning_rates = 0.1
-learning_rate3 = 0.01
+learning_rate3 = 0.001
 num_training1 = 3000
 num_training2 = 3000
 num_training3 = 20000
