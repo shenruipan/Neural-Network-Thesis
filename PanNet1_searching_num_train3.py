@@ -14,12 +14,11 @@ tf.set_random_seed(123)
 np.random.seed(123)
 
 # Parameters
-num_filter1 = 4
-num_filter2 = 12
+num_filter1 = 100
+num_filter2 = 120
 learning_rates = 0.1
-learning_rate3 = 0.001
-num_training1 = 3000
-num_training2 = 3000
+num_training1 = 1000
+num_training2 = 1000
 num_training3 = 20000
 
 # Default parameters
@@ -90,7 +89,7 @@ loss3 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits
 
 train_step1 = tf.train.GradientDescentOptimizer(learning_rates).minimize(loss1, var_list=[W_conv1, b_conv1, b_conv1_de])
 train_step2 = tf.train.GradientDescentOptimizer(learning_rates).minimize(loss2, var_list = [W_conv2, b_conv2, b_conv2_de])
-train_step3 = tf.train.GradientDescentOptimizer(learning_rate3).minimize(loss3, var_list = [W_conv3, b_conv3])
+train_step3 = tf.train.GradientDescentOptimizer(learning_rates).minimize(loss3, var_list = [W_conv3, b_conv3])
 
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
