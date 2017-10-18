@@ -14,10 +14,10 @@ tf.set_random_seed(123)
 np.random.seed(123)
 
 # Parameters
-num_filter1 = 4
-num_filter2 = 12
+num_filter1 = 100
+num_filter2 = 120
 learning_rates = 0.1
-num_training1 = 3000
+num_training1 = 1000
 num_training2 = 5000
 
 # Default parameters
