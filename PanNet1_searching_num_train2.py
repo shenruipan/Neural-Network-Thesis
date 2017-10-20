@@ -14,11 +14,11 @@ tf.set_random_seed(123)
 np.random.seed(123)
 
 # Parameters
-num_filter1 = 120
-num_filter2 = 150
+num_filter1 = 4
+num_filter2 = 12
 learning_rates = 0.1
-num_training1 = 1000
-num_training2 = 5000
+num_training1 = 5000
+num_training2 = 10000
 
 # Default parameters
 num_input = 784
@@ -26,8 +26,8 @@ dim_input = 28
 standard_deviation = 0.1
 size_filter1 = 5
 size_filter2 = 5
-
 size_batch = 100
+iter_loss = 200
 
 def weight_variable(shape, name):
     initial = tf.truncated_normal(shape, stddev = standard_deviation, seed = 123)
@@ -75,7 +75,8 @@ train_step2 = tf.train.GradientDescentOptimizer(learning_rates).minimize(loss2, 
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
-loss2_data = np.zeros([num_training2, 1], dtype= float)
+loss2_data = np.zeros([int(num_training2/iter_loss), 1], dtype= float)
+j = 0
 
 # Train
 for _ in range(num_training1):
@@ -85,10 +86,13 @@ for _ in range(num_training1):
 for i in range(num_training2):
     batch_xs, batch_ys= mnist.train.next_batch(size_batch)
     sess.run(train_step2, feed_dict={x: batch_xs})
-    loss2_data[i, 0] = np.asarray(sess.run([loss2], feed_dict={x: batch_xs}))
+    if (i + 1) % iter_loss == 0:
+        loss2_data[j, 0] = np.asarray(sess.run([loss2], feed_dict={x: mnist.validation.images}))
+        j = j + 1
 
-plt.plot(loss2_data)
+plt.plot([(k+1)*iter_loss for k in range(int(num_training2/iter_loss))], loss2_data)
 
 saver = tf.train.Saver()
 saver.save(sess, './PanNet1_train2')
+np.savetxt('loss2.txt', loss2_data)
 plt.savefig('PanNet1_train2.png', bbox_inches='tight')
