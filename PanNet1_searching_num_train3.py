@@ -14,12 +14,13 @@ tf.set_random_seed(123)
 np.random.seed(123)
 
 # Parameters
-num_filter1 = 120
-num_filter2 = 150
+num_filter1 = 4
+num_filter2 = 12
 learning_rates = 0.1
-num_training1 = 1000
-num_training2 = 1000
+num_training1 = 5000
+num_training2 = 10000
 num_training3 = 20000
+iter_loss = 800
 
 # Default parameters
 num_input = 784
@@ -94,6 +95,9 @@ train_step3 = tf.train.GradientDescentOptimizer(learning_rates).minimize(loss3, 
 sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
+loss3_data = np.zeros([int(num_training3/iter_loss), 1], dtype= float)
+j = 0
+
 # Train
 for _ in range(num_training1):
     batch_xs, batch_ys= mnist.train.next_batch(size_batch)
@@ -103,15 +107,16 @@ for _ in range(num_training2):
     batch_xs, batch_ys= mnist.train.next_batch(size_batch)
     sess.run(train_step2, feed_dict={x: batch_xs})
 
-loss3_data = np.zeros([num_training3, 1], dtype= float)
-
 for i in range(num_training3):
     batch_xs, batch_ys= mnist.train.next_batch(size_batch)
     sess.run(train_step3, feed_dict={x: batch_xs, y_:batch_ys})
-    loss3_data[i, 0] = np.asarray(sess.run([loss3], feed_dict={x: batch_xs, y_:batch_ys}))
+    if (i + 1) % iter_loss == 0:
+        loss3_data[j, 0] = np.asarray(sess.run([loss3], feed_dict={x: mnist.validation.images, y_: mnist.validation.labels}))
+        j = j + 1
 
-plt.plot(loss3_data)
+plt.plot([(k+1)*iter_loss for k in range(int(num_training3/iter_loss))], loss3_data)
 
 saver = tf.train.Saver()
 saver.save(sess, './PanNet1_train3')
+np.savetxt('loss3.txt', loss3_data)
 plt.savefig('PanNet1_train3.png', bbox_inches='tight')
