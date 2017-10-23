@@ -14,9 +14,9 @@ tf.set_random_seed(123)
 np.random.seed(123)
 
 # Parameters
-num_filter1 = 150
+num_filter1 = 120
 learning_rates = 0.1
-num_training1 = 5000
+num_training1 = 10000
 
 # Default parameters
 num_input = 784
@@ -24,7 +24,7 @@ dim_input = 28
 standard_deviation = 0.1
 size_filter1 = 5
 size_batch = 100
-iter_loss = 250
+iter_loss = 500
 
 def weight_variable(shape, name):
     initial = tf.truncated_normal(shape, stddev = standard_deviation, seed = 123)
@@ -68,7 +68,7 @@ for i in range(num_training1):
         loss1_data[j, 0] = np.asarray(sess.run([loss1], feed_dict={x: mnist.validation.images}))
         j = j + 1
 
-plt.plot(loss1_data)
+plt.plot([(k+1)*iter_loss for k in range(int(num_training1/iter_loss))], loss1_data)
 
 saver = tf.train.Saver()
 saver.save(sess, './PanNet1_train1')
