@@ -16,7 +16,7 @@ np.random.seed(123)
 # Parameters
 num_filter1 = 120
 learning_rates = 0.1
-num_training1 = 50000
+num_training1 = 5000
 
 # Default parameters
 num_input = 784
@@ -24,7 +24,7 @@ dim_input = 28
 standard_deviation = 0.1
 size_filter1 = 5
 size_batch = 100
-iter_loss = 2000
+iter_loss = 250
 
 def weight_variable(shape, name):
     initial = tf.truncated_normal(shape, stddev = standard_deviation, seed = 123)
@@ -64,16 +64,16 @@ j = 0
 for i in range(num_training1):
     batch_xs, batch_ys= mnist.train.next_batch(size_batch)
     sess.run(train_step1, feed_dict={x: batch_xs})
-    if (i+1) % iter_loss == 0:
+    if i % iter_loss == 0:
         loss1_data[j, 0] = np.asarray(sess.run([loss1], feed_dict={x: mnist.validation.images}))
         j = j + 1
 
-plt.plot([(k+1)*iter_loss for k in range(int(num_training1/iter_loss))], loss1_data)
+plt.plot([((k)*iter_loss + 1) for k in range(int(num_training1/iter_loss))], loss1_data)
 plt.xlabel('Number of training')
 plt.ylabel('Autoencoder loss')
 plt.title('Autoencoder loss for the first convolutional autoencoder')
 
 saver = tf.train.Saver()
-saver.save(sess, './PanNet1_train1')
+saver.save(sess, './PanNet_train1')
 np.savetxt('loss1.txt', loss1_data)
-plt.savefig('PanNet1_train1.png', bbox_inches='tight')
+plt.savefig('PanNet_train1.png', bbox_inches='tight')
