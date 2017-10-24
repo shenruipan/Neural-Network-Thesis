@@ -14,10 +14,10 @@ tf.set_random_seed(123)
 np.random.seed(123)
 
 # Parameters
-num_filter1 = 150
-num_filter2 = 200
+num_filter1 = 120
+num_filter2 = 150
 learning_rates = 0.1
-num_training1 = 2500
+num_training1 = 2000
 num_training2 = 5000
 
 # Default parameters
@@ -86,13 +86,16 @@ for _ in range(num_training1):
 for i in range(num_training2):
     batch_xs, batch_ys= mnist.train.next_batch(size_batch)
     sess.run(train_step2, feed_dict={x: batch_xs})
-    if (i + 1) % iter_loss == 0:
+    if i % iter_loss == 0:
         loss2_data[j, 0] = np.asarray(sess.run([loss2], feed_dict={x: mnist.validation.images}))
         j = j + 1
 
-plt.plot([(k+1)*iter_loss for k in range(int(num_training2/iter_loss))], loss2_data)
+plt.plot([(k*iter_loss+1) for k in range(int(num_training2/iter_loss))], loss2_data)
+plt.xlabel('Number of training')
+plt.ylabel('Autoencoder loss')
+plt.title('Autoencoder loss for the second convolutional autoencoder')
 
 saver = tf.train.Saver()
-saver.save(sess, './PanNet1_train2')
+saver.save(sess, './PanNet_train2')
 np.savetxt('loss2.txt', loss2_data)
-plt.savefig('PanNet1_train2.png', bbox_inches='tight')
+plt.savefig('PanNet_train2.png', bbox_inches='tight')
