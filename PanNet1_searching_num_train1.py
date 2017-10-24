@@ -16,7 +16,7 @@ np.random.seed(123)
 # Parameters
 num_filter1 = 120
 learning_rates = 0.1
-num_training1 = 10000
+num_training1 = 50000
 
 # Default parameters
 num_input = 784
@@ -24,7 +24,7 @@ dim_input = 28
 standard_deviation = 0.1
 size_filter1 = 5
 size_batch = 100
-iter_loss = 500
+iter_loss = 2000
 
 def weight_variable(shape, name):
     initial = tf.truncated_normal(shape, stddev = standard_deviation, seed = 123)
@@ -69,8 +69,11 @@ for i in range(num_training1):
         j = j + 1
 
 plt.plot([(k+1)*iter_loss for k in range(int(num_training1/iter_loss))], loss1_data)
+plt.xlabel('Number of training')
+plt.ylabel('Autoencoder loss')
+plt.title('Autoencoder loss for the first convolutional autoencoder')
 
 saver = tf.train.Saver()
 saver.save(sess, './PanNet1_train1')
-np.savetxt('loss.txt', loss1_data)
+np.savetxt('loss1.txt', loss1_data)
 plt.savefig('PanNet1_train1.png', bbox_inches='tight')
