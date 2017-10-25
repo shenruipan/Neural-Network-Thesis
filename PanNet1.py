@@ -4,6 +4,9 @@ os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("MNIST_data", one_hot=True)
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pylab as plt
 import tensorflow as tf
 import numpy as np
 
@@ -14,9 +17,10 @@ np.random.seed(123)
 num_filter1 = 120
 num_filter2 = 150
 learning_rates = 0.1
-num_training1 = 1000
-num_training2 = 1000
-num_training3 = 15000
+num_training1 = 2000
+num_training2 = 2000
+num_training3 = 50000
+iter_accuracy = 500
 
 # Default parameters
 num_input = 784
@@ -83,6 +87,8 @@ y = tf.reshape(y_tensor, [-1, num_output])
 loss1 = tf.reduce_mean(tf.square(x_image_recon - x_image))
 loss2 = tf.reduce_mean(tf.square(h_pool1_recon - h_pool1))
 loss3 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y))
+correct_prediction=tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 train_step1 = tf.train.GradientDescentOptimizer(learning_rates).minimize(loss1, var_list=[W_conv1, b_conv1, b_conv1_de])
 train_step2 = tf.train.GradientDescentOptimizer(learning_rates).minimize(loss2, var_list = [W_conv2, b_conv2, b_conv2_de])
@@ -100,18 +106,27 @@ for _ in range(num_training2):
     batch_xs, batch_ys= mnist.train.next_batch(size_batch)
     sess.run(train_step2, feed_dict={x: batch_xs})
 
-for _ in range(num_training3):
+accuracy_test = []
+accuracy_test_data = np.zeros([int(num_training3/iter_accuracy), 1], dtype= float)
+j = 0
+
+for i in range(num_training3):
     batch_xs, batch_ys= mnist.train.next_batch(size_batch)
     sess.run(train_step3, feed_dict={x: batch_xs, y_:batch_ys})
+    if (i + 1) % iter_accuracy == 0:
+        for k in range(100):
+            accuracy_test.append(sess.run(accuracy, feed_dict={x: mnist.test.images[k * 100:(k + 1) * 100, :],
+                                                               y_: mnist.test.labels[k * 100:(k + 1) * 100, :]}))
+        accuracy_test_data[j, 0] = sum(accuracy_test)/100
+        j = j + 1
 
-# Test trained model
-correct_prediction=tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-accuracy_test = []
-for i in range(100):
-    accuracy_test.append(sess.run(accuracy, feed_dict={x: mnist.test.images[i*100:(i+1)*100, :],
-                                    y_: mnist.test.labels[i*100:(i+1)*100, :]}))
-print("%.4f" % (sum(accuracy_test)/100))
+plt.figure(1)
+plt.plot([(k+1)*iter_accuracy for k in range(int(num_training3/iter_accuracy))], accuracy_test_data)
+plt.xlabel('Number of training')
+plt.ylabel('Accuracy')
+plt.title('Accuracy for PanNet-enlarge')
+plt.savefig('PanNet-enlarge_acc.png', bbox_inches='tight')
 
 saver = tf.train.Saver()
-saver.save(sess, './PanNet1')
+saver.save(sess, './PanNet')
+np.savetxt('test_accuracy.txt',accuracy_test_data )
