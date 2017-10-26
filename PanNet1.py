@@ -20,7 +20,7 @@ learning_rates = 0.1
 num_training1 = 2000
 num_training2 = 2000
 num_training3 = 50000
-iter_accuracy = 500
+iter_accuracy = 1000
 
 # Default parameters
 num_input = 784
@@ -49,8 +49,6 @@ def conv2d_valid(x, W):
 def max_pool_2x2(x):
     return tf.nn.max_pool(x, ksize = [1, 2, 2, 1],
                           strides = [1, 2, 2, 1], padding = 'SAME')
-
-
 
 x = tf.placeholder(tf.float32, [None, num_input])  # Input layer
 y_ = tf.placeholder(tf.float32, [None, num_output])  # True values for output layer
@@ -106,7 +104,7 @@ for _ in range(num_training2):
     batch_xs, batch_ys= mnist.train.next_batch(size_batch)
     sess.run(train_step2, feed_dict={x: batch_xs})
 
-accuracy_test = []
+accuracy_test = np.zeros([100, 1], dtype = float)
 accuracy_test_data = np.zeros([int(num_training3/iter_accuracy), 1], dtype= float)
 j = 0
 
@@ -115,8 +113,8 @@ for i in range(num_training3):
     sess.run(train_step3, feed_dict={x: batch_xs, y_:batch_ys})
     if (i + 1) % iter_accuracy == 0:
         for k in range(100):
-            accuracy_test.append(sess.run(accuracy, feed_dict={x: mnist.test.images[k * 100:(k + 1) * 100, :],
-                                                               y_: mnist.test.labels[k * 100:(k + 1) * 100, :]}))
+            accuracy_test[k, 0] = sess.run(accuracy, feed_dict={x: mnist.test.images[k * 100:(k + 1) * 100, :],
+                                                               y_: mnist.test.labels[k * 100:(k + 1) * 100, :]})
         accuracy_test_data[j, 0] = sum(accuracy_test)/100
         j = j + 1
 
