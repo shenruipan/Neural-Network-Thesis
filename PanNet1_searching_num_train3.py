@@ -14,13 +14,13 @@ tf.set_random_seed(123)
 np.random.seed(123)
 
 # Parameters
-num_filter1 = 150
-num_filter2 = 200
+num_filter1 = 120
+num_filter2 = 150
 learning_rates = 0.1
-num_training1 = 2500
-num_training2 = 5000
-num_training3 = 20000
-iter_loss = 250
+num_training1 = 2000
+num_training2 = 2000
+num_training3 = 50000
+iter_loss = 1000
 
 # Default parameters
 num_input = 784
@@ -87,6 +87,8 @@ y = tf.reshape(y_tensor, [-1, num_output])
 loss1 = tf.reduce_mean(tf.square(x_image_recon - x_image))
 loss2 = tf.reduce_mean(tf.square(h_pool1_recon - h_pool1))
 loss3 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y))
+correct_prediction=tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 train_step1 = tf.train.GradientDescentOptimizer(learning_rates).minimize(loss1, var_list=[W_conv1, b_conv1, b_conv1_de])
 train_step2 = tf.train.GradientDescentOptimizer(learning_rates).minimize(loss2, var_list = [W_conv2, b_conv2, b_conv2_de])
@@ -96,6 +98,7 @@ sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
 
 loss3_data = np.zeros([int(num_training3/iter_loss), 1], dtype= float)
+accuracy_data = np.zeros([int(num_training3/iter_loss), 1], dtype= float)
 j = 0
 
 # Train
@@ -112,11 +115,24 @@ for i in range(num_training3):
     sess.run(train_step3, feed_dict={x: batch_xs, y_:batch_ys})
     if (i + 1) % iter_loss == 0:
         loss3_data[j, 0] = np.asarray(sess.run([loss3], feed_dict={x: mnist.validation.images, y_: mnist.validation.labels}))
+        accuracy_data[j, 0] = np.asarray(sess.run([accuracy], feed_dict={x: mnist.validation.images, y_: mnist.validation.labels}))
         j = j + 1
 
+plt.figure(1)
 plt.plot([(k+1)*iter_loss for k in range(int(num_training3/iter_loss))], loss3_data)
+plt.xlabel('Number of training')
+plt.ylabel('Cross entropy loss')
+plt.title('Cross entropy loss for the third convolutional layer')
+plt.savefig('PanNet_train3.png', bbox_inches='tight')
+
+plt.figure(2)
+plt.plot([(k+1)*iter_loss for k in range(int(num_training3/iter_loss))], accuracy_data)
+plt.xlabel('Number of training')
+plt.ylabel('Accuracy')
+plt.title('Accuracy for the third convolutional layer')
+plt.savefig('PanNet_train3_acc.png', bbox_inches='tight')
 
 saver = tf.train.Saver()
-saver.save(sess, './PanNet1_train3')
+saver.save(sess, './PanNet_train3')
 np.savetxt('loss3.txt', loss3_data)
-plt.savefig('PanNet1_train3.png', bbox_inches='tight')
+np.savetxt('accuracy3.txt',accuracy_data )
