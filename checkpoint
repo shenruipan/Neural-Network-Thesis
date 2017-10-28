@@ -1,0 +1,2 @@
+model_checkpoint_path: "PanNet"
+all_model_checkpoint_paths: "PanNet"
