@@ -19,8 +19,8 @@ num_filter2 = 150
 learning_rates = 0.1
 num_training1 = 2000
 num_training2 = 2000
-num_training3 = 50000
-iter_accuracy = 1000
+num_training3 = 1000
+iter_accuracy = 10
 
 # Default parameters
 num_input = 784
