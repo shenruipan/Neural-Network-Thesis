@@ -17,8 +17,8 @@ np.random.seed(123)
 num_filter1 = 120
 num_filter2 = 150
 learning_rate = 0.1
-num_training = 50000
-iter_accuracy = 1000
+num_training = 1000
+iter_accuracy = 10
 
 # Default parameters
 num_input = 784
