@@ -19,8 +19,8 @@ num_filter2 = 150
 learning_rates = 0.3
 num_training1 = 2000
 num_training2 = 2000
-num_training3 = 1000
-iter_accuracy = 10
+num_training3 = 50000
+iter_accuracy = 1000
 
 # Default parameters
 num_input = 784
@@ -127,4 +127,4 @@ plt.savefig('PanNet-enlarged_acc.png', bbox_inches='tight')
 
 saver = tf.train.Saver()
 saver.save(sess, './PanNet-enlarged')
-np.savetxt('test_accuracy_0_2.txt',accuracy_test_data )
+np.savetxt('test_accuracy_0_3.txt',accuracy_test_data )
