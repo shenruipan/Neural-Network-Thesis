@@ -1,2 +1,2 @@
-model_checkpoint_path: "PanNet"
-all_model_checkpoint_paths: "PanNet"
+model_checkpoint_path: "PanNet-enlarged"
+all_model_checkpoint_paths: "PanNet-enlarged"

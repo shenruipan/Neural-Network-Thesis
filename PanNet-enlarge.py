@@ -16,7 +16,7 @@ np.random.seed(123)
 # Parameters
 num_filter1 = 120
 num_filter2 = 150
-learning_rates = 0.1
+learning_rates = 0.2
 num_training1 = 2000
 num_training2 = 2000
 num_training3 = 1000
@@ -120,11 +120,11 @@ for i in range(num_training3):
 
 plt.figure(1)
 plt.plot([(k+1)*iter_accuracy for k in range(int(num_training3/iter_accuracy))], accuracy_test_data)
-plt.xlabel('Number of training')
+plt.xlabel('Number of training batches')
 plt.ylabel('Accuracy')
-plt.title('Accuracy for PanNet-enlarge')
-plt.savefig('PanNet-enlarge_acc.png', bbox_inches='tight')
+plt.title('Accuracy for PanNet-enlarged')
+plt.savefig('PanNet-enlarged_acc.png', bbox_inches='tight')
 
 saver = tf.train.Saver()
-saver.save(sess, './PanNet')
-np.savetxt('test_accuracy.txt',accuracy_test_data )
+saver.save(sess, './PanNet-enlarged')
+np.savetxt('test_accuracy_0_2.txt',accuracy_test_data )
