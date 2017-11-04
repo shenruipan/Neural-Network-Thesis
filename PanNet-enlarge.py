@@ -16,7 +16,7 @@ np.random.seed(123)
 # Parameters
 num_filter1 = 120
 num_filter2 = 150
-learning_rates = 0.01
+learning_rates = 0.001
 num_training1 = 2000
 num_training2 = 2000
 num_training3 = 50000
@@ -127,4 +127,4 @@ plt.savefig('PanNet-enlarged_acc.png', bbox_inches='tight')
 
 saver = tf.train.Saver()
 saver.save(sess, './PanNet-enlarged')
-np.savetxt('test_accuracy_0_0_1_1000.txt',accuracy_test_data )
+np.savetxt('test_accuracy_0_0_0_1.txt',accuracy_test_data )
